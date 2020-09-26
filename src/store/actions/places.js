@@ -2,8 +2,13 @@ import Place from '../../models/Place';
 export const ADD_PLACE = 'ADD_PLACE';
 export const DELETE_PLACE = 'DELETE_PLACE';
 export const SET_PLACE = 'SET_PLACE';
+export const PLACE_ADDED = 'PLACE_ADDED';
 // export const SELECT_PLACE = 'SELECT_PLACE';
 // export const DESELECT_PLACE = 'DESELECT_PLACE';
+
+export const placeAdded = (value) => {
+  return {type: PLACE_ADDED, value: value};
+};
 
 export const fetchPlaces = () => {
   return async (dispatch, getState) => {

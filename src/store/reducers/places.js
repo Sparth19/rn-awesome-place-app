@@ -1,8 +1,14 @@
-import {ADD_PLACE, DELETE_PLACE, SET_PLACE} from '../actions/places';
+import {
+  ADD_PLACE,
+  DELETE_PLACE,
+  SET_PLACE,
+  PLACE_ADDED,
+} from '../actions/places';
 import Place from '../../models/Place';
 
 const initialState = {
   places: [],
+  placeAdded: false,
 };
 
 export default (state = initialState, action) => {
@@ -46,21 +52,11 @@ export default (state = initialState, action) => {
         ...state,
         places: action.places,
       };
-    // case SELECT_PLACE:
-    //   const place = state.places.find((pl) => {
-    //     return pl.key === action.key;
-    //   });
-    //   return {
-    //     ...state,
-    //     selectedPlace: place,
-    //   };
-
-    // case DESELECT_PLACE:
-    //   return {
-    //     ...state,
-    //     selectedPlace: null,
-    //   };
-
+    case PLACE_ADDED:
+      return {
+        ...state,
+        placeAdded: action.value,
+      };
     default:
       return state;
   }

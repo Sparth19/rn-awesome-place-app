@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   ActivityIndicator,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Button,
   Alert,
+  TextInput,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
@@ -17,8 +18,6 @@ import HeadingText from '../components/UI/HeadingText';
 import MainText from '../components/UI/MainText';
 import PickImage from '../components/UI/PickImage';
 import PickLocation from '../components/UI/PickLocation';
-import {TextInput} from 'react-native-gesture-handler';
-import {useEffect} from 'react';
 
 const SharePlaceScreen = (props) => {
   const [placeName, setPlaceName] = useState('');
@@ -30,8 +29,9 @@ const SharePlaceScreen = (props) => {
   const dispatch = useDispatch();
 
   const {navigation} = props;
+
   useEffect(() => {
-    props.navigation.setOptions({
+    navigation.setOptions({
       title: 'Share Place',
       headerLeft: () => (
         <HeaderButtons HeaderButtonComponent={HeaderButton}>
@@ -46,6 +46,18 @@ const SharePlaceScreen = (props) => {
     });
   }, [navigation]);
 
+  const placeAdded = useCallback(() => {
+    dispatch(placeActions.placeAdded(true));
+  }, [dispatch]);
+
+  useEffect(() => {
+    props.navigation.addListener('focus', placeAdded);
+    return () => {
+      props.navigation.removeListener('focus', placeAdded);
+      // willFocusSub.remove()
+    };
+  }, [placeAdded]);
+
   const placeAddedHandler = async () => {
     dispatch(uiActions.startLoading());
     try {
@@ -58,6 +70,10 @@ const SharePlaceScreen = (props) => {
       await dispatch(placeActions.addPlace(placeName, image.uri, location));
       dispatch(uiActions.stopLoading());
       setPlaceName('');
+
+      //to reset image and location
+      dispatch(placeActions.placeAdded(false));
+
       props.navigation.navigate('FindPlaceScreen');
     } catch (e) {
       console.log(e);

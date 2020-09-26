@@ -1,12 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Button, Dimensions} from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import ENV from '../../env';
+import {useSelector} from 'react-redux';
 MapboxGL.setAccessToken(ENV.mapboxApiKey);
 
 const PickLocation = (props) => {
   const [coordinates, setCoordinates] = useState([72.8311, 21.1702]);
   const [currentLocation, setCurrentLocation] = useState();
+
+  const checker = useSelector((state) => state.places.placeAdded);
+
+  useEffect(() => {
+    console.log(checker);
+    if (!checker) {
+      setCoordinates([72.8311, 21.1702]);
+      setCurrentLocation();
+    }
+  }, [checker]);
 
   const locationPickedHandler = (e) => {
     //console.log(e.geometry.coordinates);
@@ -27,11 +38,6 @@ const PickLocation = (props) => {
       setCurrentLocation(coordinate);
       //console.log(coordinate);
     }
-  };
-
-  const reset = () => {
-    setCoordinates([72.8311, 21.1702]);
-    setCurrentLocation();
   };
 
   const locateMeHandler = () => {

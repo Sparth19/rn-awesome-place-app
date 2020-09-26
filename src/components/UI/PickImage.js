@@ -1,16 +1,20 @@
 import React, {useState} from 'react';
+import {useEffect} from 'react';
 import {View, Image, Button, StyleSheet} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-
-import imagePlaceholder from '../../../assets/background.jpg';
+import {useSelector} from 'react-redux';
 
 const PickImage = (props) => {
   const [pickedImage, setPickedImage] = useState(null);
 
-  
-  const reset = () => {
-    setPickedImage(null);
-  };
+  const checker = useSelector((state) => state.places.placeAdded);
+
+  useEffect(() => {
+    console.log(checker);
+    if (!checker) {
+      setPickedImage(null);
+    }
+  }, [checker]);
 
   pickImageHandler = () => {
     ImagePicker.showImagePicker({title: 'Pick an Image'}, (res) => {
